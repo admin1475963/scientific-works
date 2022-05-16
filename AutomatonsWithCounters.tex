@@ -1,7 +1,6 @@
 \documentclass{article}
 
-\usepackage[utf8]{inputenc}
-\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc} \usepackage[english,russian]{babel}
 \usepackage{fontspec}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -18,7 +17,9 @@
 \newtheorem{lemma}{Лемма}
 
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
 \newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
 
 \title{Автоматы со счётчиком}
 \author{Илхомов Мухаммад}
@@ -44,65 +45,370 @@
 Определения автомата совпадает с определением приведенное в
 \cite{litautomatatheory}.
 
-\textbf{Автомат с \(n\) счётчиками} называется автомат и \(n\) счётчиков
-соединенные к этом автомату. \textbf{Счётчик} представляет собой устройство
-которое хранит в себе неотрицательное целое число.
+В этой работе определение автомата будет такой:
 
-Автомат с \(n\) счётчиками называется автомат вида
-\(\A = (A, Q, B, \phi, \psi, q_0, z_1, \ldots, z_n)\). Здесь
-\(z_i, i \in \overline{1, n}\) называется \textit{счётчиком}.
-Счётчик можно рассматривать как функцию от времени, которая принимает значения
-из \(\N_0\). То есть \(z_i(t) \in \N_0\).
+\begin{definition}
+  \label{def:automata}
+  Автоматом называется семёрку
+  \(\A = (A, Q, Q_f, B, \phi, \bar{\psi}, q_0)\), где:
+  \begin{itemize}
+    \item \(A=\{0, 1\}^n\) --- входной алфавит
+    \item \(Q\) --- множество состояний
+    \item \(Q_f\) --- множество финальных состояний
+    \item \(B=\{-1, 0, 1\}^n\) --- выходной алфавит
+    \item \(\phi: (Q \setminus Q_f) \times A \rightarrow Q\) ---
+      функция переходов
+    \item \(\bar{\psi}: (Q \setminus Q_f) \times A \rightarrow B\) ---
+      функция выхода, которая состоит из \(n\) функции: \linebreak
+      \(\bar{\psi} = (\psi_1, \psi_2, \ldots, \psi_n)\).
+  \end{itemize}
 
-Входной алфавит имеет вид: \(A = \{0, 1\}^n\). Соответственно входной символ
-момент времени \(t\) имеет вид \(a(t) = (a_1(t), a_2(t), \ldots, a_n(t))\),
-где:
-\begin{equation*}
-  a_i(t) =
-  \begin{cases}
-    1, z_i(t) > 0 \\
-    0, z_i(t) = 0 \\
-  \end{cases}
-\end{equation*}
-То есть входной символ это информация о том, какие счётчики не равны \(0\) и
-какие равны \(0\) в данный момент.
+  При этом есть ограничения для \(\bar{\psi}\):
 
-Выходной алфавит имеет вид \(B = \{-1, 0, 1\}^n\). Соответственно выходной символ
-момент времени \(t\) имеет вид \(b(t) = (b_1(t), b_2(t), \ldots, b_n(t))\).
+  \begin{equation}
+    \label{eq:constraint}
+    \forall i \in \{1, 2, \ldots, n\}\ (x_i = 0 \Rightarrow
+    \psi_i(q, x_1, x_2, \ldots, x_i, \ldots, x_n) \geq 0)
+  \end{equation}
+  Число \(n\) называется арностью автомата \(\A\).
+\end{definition}
 
-Выходной символ определяеть как измениться значения счётчиков. \(1\) означает
-``добавить 1'', а \(0\) и \(-1\) соответственно ``не изменить'' и
-``отнимать 1''.
-Формально значения счётчика в момент времени \(t + 1\) определяется следуещим
-образом:
-\begin{equation*}
-  z_i(t + 1) = z_i(t) + b_i(t), i \in \overline{1, n}
-\end{equation*}
+\begin{definition}
+  \label{def:automata_with_counters}
+  Упарядоченного множество \((\A, z_1^0, z_2^0, \ldots, z_n^0)\)
+  называется автомат с \(n\) счётчиками, где
+  \begin{itemize}
+  \item \(\A\) --- автомат с арностью \(n\)
+  \item \(z_i^0 \in \N_0\) --- начальным значениям \(i\)-го счётчика, где
+    \(i \in \{1, 2, \ldots, n\}\)
+  \end{itemize}
+\end{definition}
 
-Сразу заметим, мы предпологаем что выходная функция \(\psi\) является
-``корректно'', то есть счётчики никогда не принимает отрицательные значение.
-Формально это можно определить вот так: \(z_i(t) = 0 \Rightarrow b_i(t) \geq 0,
-i \in \overline{1, n}\).
+\begin{definition}
+  Пусть у нас есть автомат с \(n\) счётчиками
+  \((\A, z_1^0, z_2^0, \ldots, z_n^0)\).
+  Каноническими уравнениями автомата называется систему \ref{eq:canonical}
+  \begin{equation}
+    \label{eq:canonical}
+    \begin{cases}
+      q(0) = q_0 \\
+      z_1(0) = z_1^0 \\
+      z_2(0) = z_2^0 \\
+      \ldots \\
+      z_n(0) = z_n^0 \\
+      q(t + 1) = \phi(q(t), a(t)) \\
+      z_1(t + 1) = z_1(t) + \psi_1(q(t), a(t)) \\
+      z_2(t + 1) = z_2(t) + \psi_2(q(t), a(t)) \\
+      \ldots \\
+      z_n(t + 1) = z_n(t) + \psi_n(q(t), a(t))
+    \end{cases}
+    \end{equation}
+    где
+    \begin{align*}
+      & t \in \N_0 \\
+      & a(t) = (\text{sign}(z_1(t)), \text{sign}(z_2(t)), \ldots,
+      \text{sign}(z_n(t))) \\
+      & \text{sign}(x) =
+      \begin{cases}
+        -1, &x \in (-\infty; 0) \\
+        0, &x = 0 \\
+        1, &x \in (0; \infty)
+      \end{cases} \\
+    \end{align*}
+\end{definition}
 
-Выделим множество \textit{финальных состояний} \(Q_f \subseteq Q\).
-Автомат со счётчиками останавливается свою работу если \(q(t) \in Q_f\).
+\begin{definition}
+  \label{def:behaviour}
+  Пусть у нас есть автомат с \(n\) счётчиками
+  \((\A, z_1^0, z_2^0, \ldots, z_n^0)\).
+  \begin{itemize}
+    \item Если существуеть момент времени \(t'\), такое что \(q(t') \in Q_f\),
+      тогда поведением автомата с \(n\) счётчиками называется конечная
+      последовательность:
+      \begin{align*}
+        & (q(0), z_1(0), z_2(0), \ldots, z_n(0)) \\
+        & (q(1), z_1(1), z_2(1), \ldots, z_n(1)) \\
+        & \ldots, \\
+        & (q(t'), z_1(t'), z_2(t'), \ldots, z_n(t'))
+      \end{align*}
+      В этом случае говорится автомат с \(n\) счётчиками остановится.
+    \item Если не существуеть момент времени \(t'\), такое что \(q(t') \in Q_f\),
+      тогда поведением автомата с \(n\) счётчиками называется бесконечная
+      последовательность:
+      \begin{align*}
+        & (q(0), z_1(0), z_2(0), \ldots, z_n(0)) \\
+        & (q(1), z_1(1), z_2(1), \ldots, z_n(1)) \\
+        & \ldots, \\
+        & (q(t), z_1(t), z_2(t), \ldots, z_n(t')) \\
+        & \ldots
+      \end{align*}
+      В этом случае говорится автомат с \(n\) счётчиками не остановится.
+  \end{itemize}
+\end{definition}
+
+Автомат с \(n\) счётчиками можно рассмотреть как автомат соединенные с
+\(n\) внешными памятам, каждый который можеть хранить неотрицательное число.
+Автомат может видить только то что, каждый счётчик равно нулью или нет.
+Каждый момент времени автомат может менять значения счётчика не болле чем на
+одну единицу, при этом значения счётчиков всегда дожен остаться неотрицательным.
+Ограничение \ref{eq:constraint} как раз таки обеспечиваеть неотрицательность
+счётчиков.
 
 Мы рассмотрим вычислимость частично определенных счётнозначной функции из \(m\)
-переменных, то есть функцию, которая имеет вид:
+переменных, то есть функции, которые имеет вид:
 \({f: \N_0^m \rightarrow \N_0 \cup \{\lambda\}}\).
 \(\lambda\) означаеть ``неопределённость'', то есть считаем
 \(f(x_1, \ldots, x_m) = \lambda\), если \(f\) в точке \((x_1, \ldots, x_m)\)
 неопределено.
 
-Рассмотрим автомат с \(n\) счётчиками
-\(\A = (A, Q, B, \phi, \psi, q_0. z_1, \ldots, z_n)\), где \(n \geq m\).
-Для автомата \(\A\) рассмотрим функцию \(f_{\A}\) которая он \textit{вычисляеть}.
-Если автомат начинаеть работу с значениями счётчиков \({z_1(0) = x_1, \ldots,
-z_m(0) = x_m}\) и \({z_{m + 1}(0) = 0, \dots, z_{n}(0) = 0}\), и останавливается
-с не более одним ненулевым счётчиком, то значения функции \(f_{\A}\) на точке
-\((x_1, \dots, x_m)\) равно значению этого счётчика. В противном случае
-(если автомат не остановится или остановится с более чем одной ненулевым
-счётчиком) функция \(f_{\A}\) не определено на данной точке.
+\begin{definition}
+  Будем говорить что автомат \(\A\) с арностью \(n\) вычисляет функция
+  \(m\)-переменных \(f_{\A}: \N^m_0 \rightarrow \N_0\) (где \(m \leq n\)), если:
+  \begin{itemize}
+    \item \(f_{\A}(x_1, x_2, \ldots, x_m) = y\) и автомат с \(n\) счётчиками
+      \((\A, x_1, x_2, \ldots, x_m, 0, \ldots, 0)\) остановится,
+      причем в момент остановки \(t'\) все счётчики кроме первой равны \(0\),
+      а значения первого счётчика равно \(y\)
+    \item \(f_{\A}(x_1, x_2, \ldots, x_m) = \lambda\) и автомат с \(n\)
+      счётчиками \((\A, x_1, x_2, \ldots, x_m, 0, \ldots, 0)\) остановится,
+      причем в момент остановки \(t'\) существует ненулевой счётчик кроме
+      первого счётчика
+    \item \(f_{\A}(x_1, x_2, \ldots, x_m) = \lambda\) и автомат с \(n\)
+      счётчиками \((\A, x_1, x_2, \ldots, x_m, 0, \ldots, 0)\) не остановится
+  \end{itemize}
+\end{definition}
+
+Мы рассморим функции только от частично определенных функции одной переменной.
+Обозначим через \(J_n\) все частично определенных функции одной переменной,
+которые вычислимы через автоматы с \(n\) счётчиками.
+Очевидно что для любого \(n\) верно \(J_n \subseteq J_{n + 1}\).
+
+\begin{definition}
+  Функцию \(f: \N_0 \rightarrow \N_0\) называется периодичным, если существуеть
+  \(T \in \N\) и \(T_0 \in \N_0\), такое что для любого \(x > T_0\) и для любого
+  \(k \in \N_0\) верно \(f(x) = f(x + kT)\).
+\end{definition}
+
+\begin{definition}
+  Функцию \(f: \N_0 \rightarrow \N_0\) называется псевдопериодичным, если
+  существуеть \(T_0 \in \N_0\), такое что для любого \(x > T_0\) существует
+  \(T \in \N\), такое что для любого \(k \in \N_0\) верно \(f(x) = f(x + kT)\).
+\end{definition}
+
+\begin{definition}
+  \label{def:manoeuvre}
+  Пусть у нас есть автомат с двумя счётчиками.
+  Конечным маневрем называется поведение автомата от момента времени \(t_1\)
+  до \(t_2\):
+  \begin{align*}
+    & (q(t_1), z_1(t_1), z_2(t_1)), \\
+    & (q(t_1 + 1), z_1(t_1 + 1), z_2(t_1 + 1)), \\
+    & \ldots, \\
+    & (q(t_2), z_1(t_2), z_2(t_2))
+  \end{align*}
+  если выполняется один из следущих условий:
+  \begin{align}
+    \label{eq:manoeuvre}
+    \begin{cases}
+      z_1(t_1) = 0 \\
+      \forall t (t_1 < t \leq t_2 \Rightarrow z_2(t) \neq 0) \\
+      z_2(t_2) = 0
+    \end{cases}
+    \begin{cases}
+      z_2(t_1) = 0 \\
+      \forall t (t_1 < t \leq t_2 \Rightarrow z_1(t) \neq 0) \\
+      z_1(t_2) = 0
+    \end{cases}
+  \end{align}
+\end{definition}
+
+В этой работе основном рассматривается автомат с двумя счётчиками.
+
+\begin{definition}
+  \label{def:infinity_manoeuvre}
+  Пусть у нас есть автомат с двумя счётчиками.
+  Бесконечным маневрем называется поведение автомата от момента времени \(t_1\):
+  \begin{align*}
+    & (q(t_1), z_1(t_1), z_2(t_1)), \\
+    & (q(t_1 + 1), z_1(t_1 + 1), z_2(t_1 + 1)), \\
+    & \ldots
+  \end{align*}
+  если выполняется один из следущих условий:
+  \begin{align}
+    \label{eq:manoeuvre}
+    \begin{cases}
+      z_1(t_1) = 0 \\
+      \forall t (t_1 < t \Rightarrow z_2(t) \neq 0) \\
+    \end{cases}
+    \begin{cases}
+      z_2(t_1) = 0 \\
+      \forall t (t_1 < t \Rightarrow z_1(t) \neq 0) \\
+    \end{cases}
+  \end{align}
+\end{definition}
+
+\begin{definition}
+  \label{def:manoeuvre_function}
+  Функцию \(f\) называется функцию маневра если она имеет вид:
+  \begin{equation}
+    \label{eq:manoeuvre_function}
+    f(x) =
+    \begin{cases}
+      C_0, & x = 0 \\
+      C_1, & x = 1 \\
+      \ldots \\
+      C_{x_0}, & x = x_0 \\
+      \frac{px + r(x)}{q}, & x > x_0
+    \end{cases}
+  \end{equation}
+  где \(r(x)\) периодическая функция с предпериодом \(x_0\) и периодом \(q\),
+  причем \(r(x)\) такая, что \(\frac{px + r(x)}{q}\) является целое число для
+  всех \(x > x_0\).
+\end{definition}
+
+Обозначим через \(\F\) все функции частично определенных функции одной
+переменной.
+
+Множество значений функции \(f \in \F\) обозначим через \(Im(f)\).
+
+\begin{definition}
+  \label{def:switcher}
+  Пусть \(\varphi \in \F\).
+  \(\varphi\) называется переключательной функцией, если
+  \(Im(\varphi) < \infty\).
+\end{definition}
+
+Обозначим через \(\Phi\) множество всех переключательных функции.
+
+\begin{definition}
+  \label{def:switcher_rang}
+  Пусть \(\varphi \in \Phi\).
+  \(Im(\varphi)\) называется рангом функции \(\varphi\).
+\end{definition}
+
+\begin{definition}
+  \label{def:function_with_switcher}
+  Пару \((f, \varphi)\) называется функцию с переключателем,
+  если \(f \in \F, \varphi \in \Phi\).
+  \(f\) называется основной функцией.
+\end{definition}
+
+Обозначим через \(\Psi\) множество всех функции с переключаетелем.
+Определим на множество \(\Psi\) два оператора.
+
+\begin{definition}
+  \label{def:generalized_superposition}
+  Пусть \(S\) --- оператор над множеством \(\Psi\).
+  и пусть \((f, \varphi)\), \((f_1, \varphi_1)\), \((f_2, \varphi_2)\), \ldots,
+  \((f_n, \varphi)\) --- функции с переключателями,
+  \(E(\varphi) = \{k_1, k_2, \ldots, k_n\}\) и
+  \((f', \varphi') = S((f, \varphi), (f_1, \varphi), (f_2, \varphi_2), \ldots
+  (f_n, \varphi_n))\)
+  Тогда оператор \(S\) называется обобщенной суперпозицей, если
+  \begin{align}
+    \label{eq:generalized_superposition}
+    & f'(x) =
+      \begin{cases}
+        f_1(f(x)), & \varphi(x) = k_1 \\
+        f_2(f(x)), & \varphi(x) = k_2 \\
+        \ldots \\
+        f_n(f(x)), & \varphi(x) = k_n
+      \end{cases} \\
+    & \varphi'(x) =
+      \begin{cases}
+        \varphi_1(f(x)), & \varphi(x) = k_1 \\
+        \varphi_2(f(x)), & \varphi(x) = k_2 \\
+        \ldots \\
+        \varphi_n(f(x)), & \varphi(x) = k_n
+      \end{cases}
+  \end{align}
+\end{definition}
+
+Введем некоторые обозначения:
+\begin{itemize}
+\item
+  \(f^n(x)\) --- это \(n\) раз применения функция \(f\) на \(x\)
+\item
+  Пусть \((f, \varphi) \in \Psi\).
+  \begin{align*}
+    & \Delta_0(a) = \{x \in \N_0 | \varphi(x) = a\} \\
+    & \Delta_1(a) = \{x \in \Delta_0 | \varphi(f(x)) = a\} \\
+    & \ldots \\
+    & \Delta_k(a) = \{x \in \Delta_{k - 1} | \varphi(f^k(x)) = a\} \\
+    & \ldots
+  \end{align*}
+\item
+  Пусть \((f, \varphi) \in \Psi\).
+  \begin{align*}
+    & X_0(a) = \N_0 \setminus \Delta_0(a) \\
+    & X_1(a) = \Delta_0(a) \setminus \Delta_1(a) \\
+    & \ldots \\
+    & X_k(a) = \Delta_{k - 1}(a) \setminus \Delta_k(a) \\
+    & \ldots
+  \end{align*}
+\item
+  Пусть \((f, \varphi) \in \Psi\).
+  \begin{equation*}
+    X_{\infty}(a) = \N_0 \setminus \bigcup_{k \geq 0} X_k
+  \end{equation*}
+\end{itemize}
+
+\begin{definition}
+  \label{def:special_recusion}
+  Пусть \(R_a\) --- оператор над множеством \(\Psi\).
+  и пусть \((f, \varphi)\) --- функция с переключателем,
+  \((f', \varphi') = R_a(f, \varphi)\).
+  Тогда оператор \(R_a\) называется обобщенной суперпозицей, если
+  \begin{align}
+    \label{eq:generalized_superposition}
+    & f'(x) =
+      \begin{cases}
+        f(x), & x \in X_0(a) \\
+        f(f(x)), & x \in X_1(a) \\
+        \ldots \\
+        f^{k + 1}(x), & x \in X_k(a) \\
+        \ldots
+      \end{cases} \\
+    & \varphi'(x) =
+      \begin{cases}
+        \varphi(x), & x \in X_0(a) \\
+        \varphi(f(x)), & x \in X_1(a) \\
+        \ldots \\
+        \varphi(f^k(x)), & x \in X_k(a) \\
+        \ldots
+      \end{cases}
+  \end{align}
+\end{definition}
+
+\section{Классические результаты}
+
+\begin{theorem}
+  \label{theor:one_counter}
+  \(J_1\) состоит из периодических функции и функции следующего вида:
+  \begin{equation*}
+    f(x) =
+    \begin{cases}
+      C_0, & x = 0 \\
+      C_1, & x = 1 \\
+      \ldots \\
+      C_{k - 1}, & x = k - 1\\
+      x + c, & x \geq k
+    \end{cases}
+  \end{equation*}
+  где \(k, c, C_0, C_1, \ldots, C_{k - 1} \in \N_0\).
+\end{theorem}
+
+\begin{theorem}
+  \label{theor:three_counter}
+  \(J_3\) совпадаеть с классом частично рекурсивных функции от одной переменной.
+\end{theorem}
+
+\begin{theorem}
+  \label{theor:two_counter_special}
+  Пусть у нас есть кодировка \(x \mapsto 2^x\).
+  В таком кодировке любая частично рекурсивная функция вычислима на автоматах с
+  двумя счётчиками.
+\end{theorem}
 
 \clearpage
 
