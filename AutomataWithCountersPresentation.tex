@@ -41,7 +41,7 @@
 \newcommand{\G}{\mathcal{G}}
 \newcommand{\M}{\mathcal{M}}
 
-\title{Функции, вычислимые через автоматы со счётчиками}
+\title{Вычисление функций автоматами со счётчиками}
 \author{Илхомов Мухаммад}
 \institute{Научный руководитель: Волков Николай Юрьевич}
 \date{}
@@ -313,6 +313,54 @@
       \end{cases}
   \end{align*}
 \end{my_definition}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Пример}
+  \begin{align*}
+    & f(x) =
+      \begin{cases}
+        \frac{x}{2}, \text{если}\ x = 2 k \\
+        x, \text{если}\ x = 2 k + 1
+      \end{cases}
+    & g(x) =
+      \begin{cases}
+        0, \text{если}\ x = 2 k \\
+        1, \text{если}\ x = 2 k + 1
+      \end{cases}
+  \end{align*}
+  \begin{align*}
+    & \Delta_0(0) = \{x \in \N_0 \mid x = 2 k\}
+    & X_0(0) = \{x \in N_0 \mid x = 2 k + 1\} \\
+    & \Delta_1(0) = \{x \in \N_0 \mid x = 4 k\}
+    & X_1(0) = \{x \in N_0 \mid x = 4 k + 2\} \\
+    & \Delta_2(0) = \{x \in \N_0 \mid x = 8 k\}
+    & X_2(0) = \{x \in N_0 \mid x = 8 k + 4\} \\
+    & \ldots & \ldots \\
+    & & X_{\infty}(0) = \{0\}
+  \end{align*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Пример}
+  \begin{align*}
+    & (f', g') = R_0[f, g] \\
+    & f'(x) =
+    \begin{cases}
+      \lambda, \text{если}\ x = 0 \\
+      x, \text{если}\ x = 2 k + 1 \\
+      \frac{x}{2}, \text{если}\ x = 4 k + 2 \\
+      \frac{x}{4}, \text{если}\ x = 8 k + 4 \\
+      \ldots \\
+      \frac{x}{2^n}, \text{если}\ x = 2^{n + 1} k + 2^n \\
+      \ldots \\
+    \end{cases} \\
+    & g'(x) =
+      \begin{cases}
+        \lambda, \text{если}\ x = 0 \\
+        1, \text{если}\ x > 0
+      \end{cases}
+  \end{align*}
 \end{frame}
 
 \begin{frame}

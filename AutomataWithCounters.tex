@@ -68,7 +68,7 @@
   \bigskip
   \textbf{Курсовая работа} \\
   \bigskip
-  \textbf{Функции, вычислимые через автоматы со счётчиками} \\
+  \textbf{Вычисление функций автоматами со счётчиками} \\
   \bigskip
   \bigskip
   \Large
@@ -376,6 +376,8 @@
   \end{align}
   При этом для любого \(x \in \N_0\) если \(f_0(x) = \lambda\) (соответственно
   \(g_0(x) = \lambda\)), то \(f(x) = \lambda\) и \(g(x) = \lambda\)
+
+  Операция \(S_n\) называется операцией обобщенной суперпозиции
 \end{definition}
 
 Логика операции обобщенной суперпозиции похоже на логику операции композиции над автоматами,
@@ -417,6 +419,8 @@
   \end{align}
   При этом для любого \(x \in \N_0\) если \(f_0^l(x) = \lambda\) (где \(1 \leq l \leq k\)), то
   \(f(x) = \lambda\) и \(g(x) = \lambda\)
+
+  Операция \(R_a\) называется операцией специальной рекурсии
 \end{definition}
 
 \begin{definition}
@@ -640,13 +644,13 @@
 
 \begin{theorem}
   \label{theor:three_counter}
-  \(J_3\) совпадаеть с классом частично рекурсивных функции от одной переменной.
+  \(J_3\) совпадает с классом частично рекурсивных функций от одной переменной.
 \end{theorem}
 
 \begin{theorem}
   \label{theor:two_counter_special}
-  Пусть у нас есть кодировка \(x \mapsto 2^x\).  В таком кодировке любая частично рекурсивная
-  функция вычислима на автоматах с двумя счётчиками.
+  Пусть у нас есть кодировка \(x \mapsto 2^x\).  В такой кодировке любая частично рекурсивная
+  функция вычислима через автоматы с двумя счётчиками.
 \end{theorem}
 
 \clearpage
@@ -655,7 +659,7 @@
 
 \begin{theorem}
   \label{computable_functions}
-  \(J_2 = F_2\).
+  \(J_2 = \F_2\).
 \end{theorem}
 
 \begin{hypothesis}
@@ -664,7 +668,7 @@
     \label{eq:pseudoperiodic}
     f(x) = \frac{a(x) \cdot x + b(x)}{d(x)}
   \end{equation}
-  где \(a(x), b(x), d(x)\) является псевдопериодичными функциями.
+  где \(a(x), b(x), d(x)\) являются псевдопериодичными функциями.
 \end{hypothesis}
 
 \clearpage
@@ -1176,7 +1180,7 @@
 
 \begin{theorem}
   \label{computable_functions}
-  \(\F_2 = J_2\).
+  \(J_2 = \F_2\).
 \end{theorem}
 
 \begin{proof}
@@ -1216,6 +1220,8 @@
   ``Вильямс'', 2002.
 \bibitem{litautomatapersecution} Н. Ю. Волков. \textit{Об автоматной модели преследования}.
     Дискретная математика, 2007
+\bibitem{litautomatainquadrant} Ю. Л. Хегай. \textit{Поведение в квадранте неприодических автоматов}.
+    Выпускная квалификационная работа, 2020.
 \end{thebibliography}
 
 \end{document}
