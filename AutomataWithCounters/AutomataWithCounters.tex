@@ -778,6 +778,42 @@
           z_1(i) > 0 \wedge z_1(j) > 0
         \end{cases}
       \end{equation*}
+      Тогда верно следующие равенства:
+      \begin{align*}
+        & \begin{cases}
+          q(i) = q(j) \\
+          a_1(i) = a_1(j) \\
+          z_2(i) = z_2(j) \\
+          a_2(i) = a_2(j)
+        \end{cases} \\
+        & j + 1 \leq t_2 \Rightarrow
+        \begin{cases}
+          q(i + 1) & = \varphi(q(i), a_1(i), a_2(i)) = \varphi(q(j), a_1(j), a_2(j)) = q(j + 1) \\
+          z_2(i + 1) & = z_2(i) + \psi_2(q(i), a_1(i), a_2(i)) \\
+                     & = z_2(j) + \psi_2(q(j), a_1(j), a_2(j)) = z_2(j + 1) \\
+          a_2(i + 1) & = \sign(z_2(i + 1)) = \sign(z_2(j + 1)) = a_2(j + 1)
+        \end{cases} \\
+        & j + 1 < t_2 \Rightarrow z_1(i + 1) > 0 \wedge z_1(j + 1) > 0
+          \Rightarrow a_1(i + 1) = a_1(j + 1) = 1 \\
+        & \ldots \\
+        & j + \delta \leq t_2 \Rightarrow
+          \begin{cases}
+            q(i + \delta) & = \varphi(q(i + \delta - 1), a_1(i + \delta - 1), a_2(i + \delta - 1)) \\
+                          & = \varphi(q(j + \delta - 1), a_1(j + \delta - 1), a_2(j + \delta - 1))
+                            = q(j + \delta) \\
+            z_2(i + \delta) & = z_2(i + \delta - 1)
+                              + \psi_2(q(i + \delta - 1), a_1(i + \delta - 1), a_2(i + \delta - 1)) \\
+                            & = z_2(j + \delta - 1)
+                              + \psi_2(q(j + \delta - 1), a_1(j + \delta - 1), a_2(j + \delta - 1)) \\
+                            & = z_2(j + \delta) \\
+            a_2(i + \delta) & = \sign(z_2(i + \delta)) = \sign(z_2(j + \delta)) = a_2(j + \delta)
+          \end{cases} \\
+        & j + \delta < t_2 \Rightarrow z_1(i + \delta) > 0 \wedge z_1(j + \delta) > 0
+          \Rightarrow a_1(i + \delta) = a_1(j + \delta) = 1 \\
+      \end{align*}
+      где \(\delta \in \N\).
+
+      Тогда обозначим \(T = j - i, d = z_1(j) - z_1(i)\).
     \end{itemize}
   \end{enumerate}
 \end{proof}
@@ -801,7 +837,8 @@
   \item \(i = 0\) (по определению существует только одна вершина, которая имеет уровен \(0\)).
     Если верно \(q_0 \in Q_f\), то сразу остановимся.
     Добавим вершину обозначаемую через \(v_0\), и пометим эту вершину функцией \((f_0, g_0)\).
-    Добавим \(|Im(g_0) \ \{0\}|\), вершин и проводим ребра от \(v_0\) с метками из \(Im(g_0) \ \{0\}\).
+    Добавим \(|Im(g_0) \setminus \{0\}|\), вершин и проводим ребра от \(v_0\) с метками из
+    \(Im(g_0) \setminus \{0\}\).
     Если \(0 \in Im(g_0)\), тогда проводим петлю с меткой \(0\).
   \item \(i > 0\). Пусть построено \(i\) уровень.
     Для каждой нефинальной вершины \(i + 1\)-уровня сделаем следующую действию.
