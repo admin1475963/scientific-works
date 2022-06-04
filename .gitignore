@@ -6,3 +6,4 @@
 *.nav
 *.out
 *.png
+**/auto/
