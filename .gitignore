@@ -1,2 +1,8 @@
-*.*
-!*.tex
+*.aux
+*.pdf
+*.log
+*.toc
+*.snm
+*.nav
+*.out
+*.png
