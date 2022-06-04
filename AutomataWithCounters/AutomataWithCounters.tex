@@ -199,6 +199,12 @@
 \end{definition}
 
 \begin{definition}
+  \label{def:configuration}
+  Упорядоченное множество \((q(t), z_1(t), \ldots, z_n(t))\) называется конфигурацией в момент
+  времени \(t\).
+\end{definition}
+
+\begin{definition}
   \label{def:behaviour}
   Пусть у нас есть инициализированный автомат с \(n\) счётчиками
   \((\A, z_1^0, z_2^0, \ldots, z_n^0)\).
@@ -675,10 +681,6 @@
 \section{Леммы и доказательства}
 
 \begin{lemma}
-  \label{lemma:similar_behaviour}
-\end{lemma}
-
-\begin{lemma}
   \label{lemma:manoeuvre}
   Пусть дано автомат с 2 счётчиками \(\A\) с \(N\) состояниями.
   Нумеруем все состояния автомата:
@@ -751,22 +753,33 @@
   так как в выражениях \ref{eq:manoeuvre_function}
   и \ref{eq:manoeuvre_function_nd} значения констант \(C_0, C_1,
   \ldots, C_k\) можно задать любым способом,
-  и в предпериоде \(g\) тоже может принимать любые значения.
+  и в предпериоде функция \(g\) тоже может принимать любые значения.
 
-  Рассмотрим два случая:
-  \begin{itemize}
-  \item Пусть cуществует \(x_0 \in \N_0\), такой что для любого \(x > x_0\) и для любого \(t\),
-    где \(t_1 \leq t \leq t_2\) верно, что \(z_2(t) \leq N + 1\).
+  \begin{enumerate}
+  \item Пусть автомат совершает конечный манёвр, начиная с момента \(t_1\) и заканчивая в моменте
+    \(t_2\).
+    Рассмотрим два случая:
+    \begin{itemize}
+    \item Для любого \(x\) и для любого \(t\)
+      (где \(t_1 \leq t \leq t_2\)) верно, что:
+      \begin{equation*}
+        (z_1(t_1) = x \wedge z_2(t_1) = 0) \Rightarrow z_2(t) \leq N
+      \end{equation*}
 
-    Докажем, что не существуют
-    \(i, j\), такие что верно следующие условия:
-    \begin{equation}
-      \label{eq:not_positive_movement}
-      (t_1 \leq i < j < t_2 \wedge q(i) = q(j)) \Rightarrow (z_2(j) - z_2(i) > 0)
-    \end{equation}
-    Докажем от противного. Предположим, что есть \(i, j\), такие что верно
-    \ref{eq:not_positive_movement}. Тоо
-  \end{itemize}
+      Пусть \(x > N (N + 1) + 1\). Тогда \(t_2 - t_1 \geq N (N + 1) + 1\).
+      Заметим, что \(z_2(t)\) может принимать \(N + 1\) различных значений,
+      а \(q(t)\) может принимать \(N\) различных значений.
+      Тогда существует моменты времени \(i\) и \(j\), для которых верно:
+      \begin{equation*}
+        \begin{cases}
+          t_1 \leq i < j < t_2 \\
+          q(i) = q(j) \\
+          z_2(i) = z_2(j) \\
+          z_1(i) > 0 \wedge z_1(j) > 0
+        \end{cases}
+      \end{equation*}
+    \end{itemize}
+  \end{enumerate}
 \end{proof}
 
 По лемме \ref{lemma:manoeuvre} каждому состоянию автомата \(\A\) можно сопоставить
